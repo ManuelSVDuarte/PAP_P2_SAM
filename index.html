@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulado de Ausculta Cardíaca</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; }
+        .card { border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
+        #simulado { display: none; margin-top: 20px; border: 2px solid #007bff; padding: 20px; }
+        input { padding: 10px; width: 70%; }
+        button { padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>Biblioteca de Sons Cardíacos</h1>
+    <div id="biblioteca"></div>
+
+    <hr>
+    <button onclick="iniciarSimulado()">Iniciar Simulado Aleatório</button>
+
+    <div id="simulado">
+        <h2>Simulado</h2>
+        <audio id="audioPlayer" controls></audio>
+        <p><input type="text" id="respostaUsuario" placeholder="Digite o que você ouviu..."></p>
+        <button onclick="conferir()">Conferir</button>
+        <button onclick="proxima()">Próxima</button>
+        <p id="resultado"></p>
+    </div>
+
+    <script>
+        const bancoDeSons = [
+            { arquivo: "b3.mp4", nome: "Terceira Bulha (B3)" },
+            { arquivo: "b4.mp4", nome: "Quarta Bulha (B4)" },
+            { arquivo: "estenose_aortica.mp4", nome: "Estenose Aórtica" },
+            { arquivo: "estenose_mitral.mp4", nome: "Estenose Mitral" },
+            { arquivo: "prolapso_mitral.mp4", nome: "Prolapso Mitral" },
+            { arquivo: "regurgitacao_aortica.mp4", nome: "Regurgitação Aórtica" },
+            { arquivo: "regurgitacao_mitral.mp4", nome: "Regurgitação Mitral" }
+        ];
+
+        let somAtual = null;
+
+        // Carrega lista inicial
+        const libDiv = document.getElementById('biblioteca');
+        bancoDeSons.forEach(s => {
+            libDiv.innerHTML += `<div class='card'><strong>${s.nome}</strong><br><audio controls src='${s.arquivo}'></audio></div>`;
+        });
+
+        function iniciarSimulado() {
+            document.getElementById('simulado').style.display = 'block';
+            proxima();
+        }
+
+        function proxima() {
+            somAtual = bancoDeSons[Math.floor(Math.random() * bancoDeSons.length)];
+            const player = document.getElementById('audioPlayer');
+            player.src = somAtual.arquivo;
+            document.getElementById('resultado').innerText = "";
+            document.getElementById('respostaUsuario').value = "";
+        }
+
+        function conferir() {
+            const user = document.getElementById('respostaUsuario').value.toLowerCase();
+            const correta = somAtual.nome.toLowerCase();
+            if (user.includes(correta.split(' ')[0])) {
+                document.getElementById('resultado').innerText = "Correto! Era: " + somAtual.nome;
+            } else {
+                document.getElementById('resultado').innerText = "Incorreto. Era: " + somAtual.nome;
+            }
+        }
+    </script>
+</body>
+</html>
